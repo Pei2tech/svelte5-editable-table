@@ -57,12 +57,6 @@ web_modules/
 # Optional stylelint cache
 .stylelintcache
 
-# Microbundle cache
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
-
 # Optional REPL history
 .node_repl_history
 
@@ -119,11 +113,6 @@ dist
 # FuseBox cache
 .fusebox/
 
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
@@ -134,3 +123,5 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+.svelte-kit/
