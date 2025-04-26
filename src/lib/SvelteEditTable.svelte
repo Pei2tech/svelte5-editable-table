@@ -9,13 +9,12 @@
         icons: {},
         iconstip:{},
         style:{},
-        columns_setting: [],
-        row_settings: {},
+        columns_setting: [],     
     };
     /**
      * @typedef {Object} Props
-     * @property {any} [table_data]
-     * @property {boolean} [rowKeep]    
+     * @property {any} [rows_data]
+     * @property {boolean} [clickborder]    
      * @property {any} [selectedrow]
      * @property {any} [table_config]
      * @property {void} [onupdate]
@@ -25,8 +24,8 @@
 
     /** @type {Props} */
     let {
-        table_data =  {},
-        rowKeep = true,    
+        rows_data =  {},
+        clickborder = true,    
         selectedrow = [],
         table_config = table_config_default, 
         onupdate,
@@ -89,10 +88,10 @@
         let width = tablewidth;
         let font_size = 10;
         let newobj={};
-        if (table_data.length !== 0)
-            Object.entries(table_data[0]).forEach(item=>newobj[item[0]]=item[0]);
+        if (rows_data.length !== 0)
+            Object.entries(rows_data[0]).forEach(item=>newobj[item[0]]=item[0]);
         table_config.columns_setting.forEach(item=>newobj[item.key]=(item.displayName));
-        let array = [newobj, ...table_data];
+        let array = [newobj, ...rows_data];
         let newdata = array.map(row => {
             let newrow = Object.entries(row).filter(([key]) => keys.includes(key));
             if (editedFlag || operationFlag)
@@ -163,7 +162,7 @@
     }
 
     function getUpdates(id) {
-        const body = { ...table_data[id] };
+        const body = { ...rows_data[id] };
         table_config.columns_setting.forEach((item,j) => {
             if (item.edit) {
                 showCell[id][j]=true;
@@ -174,9 +173,14 @@
     }
 
     function handleConfirmEdit(id,event) {
-        event.stopPropagation();
+        event.stopPropagation();               
+        if (onupdate === undefined || onupdate === null){
+            resetEditOperation(id); 
+            last_id = NONE_OPERATION;      
+            return
+        } 
         const body = getUpdates(id);
-        table_data[id] = body;       
+        rows_data[id] = body; 
         onupdate({ id, row: body }),   
         resetEditOperation(id);
         calculateWidth();
@@ -198,8 +202,13 @@
     }
 
     function handleConfirmOperation(id,event) {
-        event.stopPropagation();        
-        onoperation({ id, row: table_data[id] }), 
+        event.stopPropagation(); 
+        if (onoperation === undefined || onoperation === null) {
+            resetEditOperation(id);
+            last_id = NONE_OPERATION;       
+            return
+        } 
+        onoperation({ id, row: rows_data[id] }), 
         resetEditOperation(id);
         rowbdcolor.fill("");
         last_id = NONE_OPERATION;
@@ -208,9 +217,10 @@
     function handleCell(id, cell,event) {
         event.stopPropagation();
         cancelEditingValue(id);
-        const body = { ...table_data[id] };       
-        onclickCell({ id, row: body, key: Object.keys(columnByKey)[cell] })
-        if (rowKeep) {
+        const body = { ...rows_data[id] };
+        if (onclickCell !== undefined)        
+            onclickCell({ id, row: body, key: Object.keys(columnByKey)[cell] })
+        if (clickborder) {
             rowbdcolor.fill("");
             rowbdcolor[id] = rowstyle.click;
         }
@@ -223,11 +233,11 @@
     }
 
     function handleSort(key) {
-        if (table_data.length === 0) return;
+        if (rows_data.length === 0) return;
         if (!sortableFlag) return;
         resetEditOperation(last_id);
         last_id = NONE_OPERATION;
-        table_data = goSort(key, sortStore, table_data);
+        rows_data = goSort(key, sortStore, rows_data);
         sortkey = key;
         sortOrder = sortStore[key] === 'ASC' ? 1 : -1;
         rowbdcolor.fill("");       
@@ -319,7 +329,7 @@
                     }else
                         columnsWidth = Array(table_config.columns_setting.length).fill("100%");
                 }                     
-                if (table_data.length!==0){                   
+                if (rows_data.length!==0){                   
                     if (autowidthFlag) {
                         overflow = "--overflow:visible";                        
                         resize_position = "none";
@@ -333,8 +343,9 @@
     });
 
 
-    $effect.pre(() => {             
-        if ( table_data.length !== 0) {                 
+    $effect.pre(() => {                                      
+        if (rows_data.length !== 0) {                 
+         
             untrack(()=>{                             
                 sortOrder = null;                                   
                 showCell.splice(0,showCell.length);
@@ -345,7 +356,7 @@
                 }
             
                 edit_id={};
-                table_data.forEach((data,i) => {
+                rows_data.forEach((data,i) => {
                     showCell[i]=[];
                     Object.keys(columnByKey).forEach((f,j) => {
                         if (!(f in data)) data[f] = null;
@@ -357,7 +368,7 @@
                     
                 if (autowidthFlag){
                     overflow =  "--overflow:visible" ;                    
-                    resize_position = "none";
+                    resize_position = "none";            
                     calculateWidth();
                     }else{
                     overflow = "--overflow:hidden";
@@ -371,7 +382,7 @@
     });  
     
     $effect(()=>{         
-        if(tempwidth!=tablewidth && autowidthFlag && tablewidth!==undefined) {
+        if(tempwidth!=tablewidth && autowidthFlag && tablewidth!==undefined) {                
                 calculateWidth();                
         }
         tempwidth=tablewidth;
@@ -500,7 +511,7 @@
 </style>
 
 <main>
-    {#if table_data !== undefined}
+    {#if rows_data !== undefined}
         <div class="table" bind:clientWidth="{tablewidth}" >
              <div class="thead">
                 {#each Object.keys(columnByKey) as key, index}
@@ -508,7 +519,7 @@
                          onmousedown={()=>startResize(index)} onmousemove={(e)=>handleResize(index,e)} onmouseup={()=>stopResize(index)}>
                         <div aria-label="Sort{key}" class="headline-name" style="width: {columnsWidth[index]}" onclick={()=>handleSort(key)}>
                             {columnByKey[key].displayName}
-                            {#if sortOrder !== null && sortkey === key && table_data.length !== 0}
+                            {#if sortOrder !== null && sortkey === key && rows_data.length !== 0}
                                 {sortOrder === 1 ? icons.asc : icons.desc}
                             {/if}
                         </div>
@@ -516,7 +527,7 @@
                 {/each}
             </div>
 
-            {#each table_data as tableRow, i (tableRow)}
+            {#each rows_data as tableRow, i (tableRow)}
                 <div class="tr alternated" style="border: {rowbdcolor[i]}; background: {rowbkcolor[i]};" style:--alternateRow={i%2===0? rowstyle.alternate: null} style:--hoverRow="{rowstyle.hover}" >
                     {#each Object.keys(columnByKey) as key, j}
                         <div class="td " style:width="{columnsWidth[j]}"  onclick={(e) => handleCell(i, j,e)}>
