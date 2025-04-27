@@ -1,10 +1,20 @@
 # svelte5-editable-table
 
-A simple and small svelte 5 editable table component. Allows editing data and option operation on icon selection.
+A simple and small Svelte 5 editable table component. It allows editing data and performing extra operations through icon selection.
 
-## Example
+This project started as a fork of [svelte-generic-crud-table](https://github.com/ivosdc/svelte-generic-crud-table). However, almost all the code has been rewritten to improve performance, add new features, and remove outdated ones. 
 
-[example](https://dasdaniel.github.io/svelte-table/)
+## Feature
+
+- **Editable Cells**: Allows users to edit specific cells in the table.
+- **Customizable Columns**: Configure columns with options like `edit`, `width`, and `displayName`.
+- **Row Selection**: Supports single and multiple row selection.
+- **Custom Styles**: Define styles for rows, including hover, click, and alternate row styles.
+- **Icons and Tooltips**: Customize icons and tooltips for actions like edit, operation, confirm, and cancel.
+- **Sorting**: Enable or disable sorting for columns.
+- **Responsive Design**: Automatically adjusts column widths with the `autowidth` option.
+- **Event Callbacks**: Handle events like cell clicks, updates, and operations with custom callbacks.
+
 
 ## Install
 
@@ -58,115 +68,123 @@ const columns = [
 
  ## Props of columns_setting
 
-| Name           | Type          | Description 
-| `key`          | String        | Unique key identifying the column (array)                                           |
-| `displayName`  | String        | Name for header(array)                                                        |
-| `width`        | Boolen        | Width of Field. vailid for authwidth:false  
-| `edit`         | Boolen        | optional. default: false  
-
+| Name           | Type          | Description                                                             |
+| --------------- | -------------| ----------------------------------------------------------------------- |
+| `key`          | String        | Unique key identifying the column                                       |
+| `displayName`  | String        | Name for the header                                                     |
+| `width`        | Boolean       | Width of the field. It is only valid when `autowidth` is set to `false` |
+| `edit`         | Boolean       | Optional. Default: `false`                                              |
 
 ## Props of table_config
 
 | Option                     | Type            | Description                                                             |
 | -------------------------- | --------------- | ----------------------------------------------------------------------- |
-| `columns_setting`          | Object[]        | configuration of columns (array)                                           |
-| `rows`                     | Object[]        | row (data) (array)                                                        |
-| `autowidth`                | Boolen          | Width ajustment. default: true  
-| `sortable`                 | Boolen          | Sorting default: true  
-| `operation`                | Boolen          | extra operation icon default: false                                                          |
-| `style`                    | Object          | row style (see below detailed)              |
-| `icons`                    | Object          | optional icons (emoji)
-| `iconstip`                 | Object          | optional icons tips 
-  
+| `columns_setting`          | Object[]        | Configuration of columns (array)                                        |
+| `autowidth`                | Boolean         | Width adjustment. Default: `true`                                       |
+| `sortable`                 | Boolean         | Sorting. Default: `true`                                                |
+| `operation`                | Boolean         | Extra operation icon. Default: `false`                                  |
+| `style`                    | Object          | Row style configuration. Allows custom styling for rows or cells. See examples below. |
+| `icons`                    | Object          | Optional icons (e.g., emoji) for operations or actions. See examples below. |
+| `iconstip`                 | Object          | Optional tooltip text for icons. See examples below.                    |
 
+### Examples for `style`, `icons`, and `iconstip`
 
-###  Props of component
+#### `style`
 
- pass the following params to component 
+The `style` property allows you to define custom styles for rows in the table. You can specify styles for alternate rows, hovered rows, clicked rows, and selected rows. This provides flexibility to customize the appearance of the table.
 
-| paramenter    |  call back        | Description     |
-| ------------- | ---------------   | --------------- |
-| `onclickCell` | `event` (id, key, row) | click on a cell   |
-| `onupdate`    | `event` (id, row) | click on a edit icon |
-| `onoperation` | `event` (id, row) | click on a operation icon |
-| `selectedrow` |                   | pass selected rows (id)  
-| `table_config`|                   | configuration of table
-| `rows_data`   |                   | data of rows   
+For example:
 
+```js
+let table_config = {
+  ...existing code...
+  style: {
+    alternateRow: '#fff7fb', // Background color for alternate rows
+    hoverRow: "yellow",      // Background color when a row is hovered
+    clickRow: "dashed red",  // Border style for a clicked row
+    selectedRow: "#f0f5ff"   // Background color for selected rows
+  },
+};
+```
 
+- `alternateRow`: Sets the background color for alternate rows.
+- `hoverRow`: Sets the background color when a row is hovered.
+- `clickRow`: Sets the border style for a clicked row.
+- `selectedRow`: Sets the background color for selected rows.
 
+#### `icons`
 
-### Selecting multiply Rows
+You can customize icons for actions like edit, operation, confirm or cancel. For example:
 
-- By default, single row selection is handled by clickRow, However, multiple rows is handled through `onclickCell` and the `selectedrow` properity.
+```js
+let table_config = {
+  ...existing code...
+  icons: {
+    edit: "✏️",
+    operation: "🗑️",
+      },
+};
+```
 
+- `edit`: Icon for the edit action.
+- `operation`: Icon for the extra operation action.
+- `confirm`: Icon for the confirmation action.
+- `cancel`: Icon for the cancel action.
+
+#### `iconstip`
+
+You can define tooltips for the icons to provide different context (e.g., different languages). For example:
+
+```js
+let table_config = {
+  ...existing code...
+  iconstip: {
+    edit: "Update",
+    operation: "Delete",
+    confirm: "確認",
+  },
+};
+```
+
+- `edit`: Tooltip text for the edit icon.
+- `operation`: Tooltip text for the operation icon.
+- `confirm`: Tooltip text for the confirmation icon.
+- `cancel`: Tooltip text for the cancel icon.
+
+### Props of component
+
+Pass the following parameters to the component:
+
+| Parameter      | Callback            | Description                                                             |
+| -------------- | ------------------- | ----------------------------------------------------------------------- |
+| `onclickCell`  | `event` (id, key, row) | Triggered when a cell is clicked                                        |
+| `onupdate`     | `event` (id, row)   | Triggered when the edit icon is clicked                                 |
+| `onoperation`  | `event` (id, row)   | Triggered when the operation icon is clicked                            |
+| `selectedrow`  |                     | Pass selected rows (id)                                                 |
+| `table_config` |                     | Configuration of the table, including column settings and additional options like sorting, styling, and icons |
+| `rows_data`    |                     | Data of rows                                                            |
+
+### Selecting multiple Rows
+
+- By default, single row selection is handled by clicking on a row. However, multiple row selection is managed through the `onclickCell` event and the `selectedrow` property.
 
 ```html
 <script>  
   import {SvelteEditTable} from 'svelte5-editable-table';
-  let selectedrow=$state([]);
+  let selectedrow = $state([]);
   function handleCell(event) {       
-        selectedrow=[...selectedrow, event.id]        
+        selectedrow = [...selectedrow, event.id];        
   }
 </script> 
 <SvelteEditTable
   table_config={table_config}
-  rows_data="{rows}"
+  rows_data={rows}
   selectedrow={selectedrow}
   onclickCell={handleCell}  
 /> 
 ```
 
 
-### `searchValue`
 
-#### Option 1: `searchValue(row, searchTerm):boolean`
 
-Define a function that accepts a row and the searchTerm, the comparison is defined within the function and the match is returned in the form of a boolean.
-
-This is the recommended way of using the search (added in v0.5.3)
-
-#### Option 2: `searchValue(row):string`
-
-Define a function that accepts a row and returns a string. SveltTable does the comparison internally, but only supports case-insensitive compare using `includes`
-
-This behaviour is set for deprecation and should not be used.
-
-If you want to migrate the existing behaviour you can use this example:
-
-```js
-searchValue: (v, s) = 
-  v["some_key"].toString().toLowerCase().includes(s.toLowerCase()),
-```
-
-### `renderComponent`
-
-Defining a component can be done directly by passing the component as a value
-
-```js
-[
-  {
-    key: "myColumn",
-    //...
-    renderComponent: myComponent,
-  },
-];
-```
-
-Or, if props need to be passed, an object with `component` and `props` can be passed.
-
-```js
-[
-  {
-    key: "myColumn",
-    //...
-    renderComponent: {
-      component: myComponent,
-      props: {
-        myProp: "someValue",
-      },
-    },
-  },
-];
-```
 
