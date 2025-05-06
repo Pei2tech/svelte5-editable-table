@@ -41,11 +41,11 @@ npm install -save svelte5-editable-table
 // define sample data (below data are from kaggle web site)...
 
 const rows = [
- { Index: 1, FirstName: "Sara", LastName: "Mcguire", Sex: "Female", Email: "tsharp@example.net", Phone: "(971)643-6089x9160", BirthDate: "17-08-21" },
- { Index: 2, FirstName: "Alisha", LastName: "Hebert", Sex: "Male", Email: "vincentgarrett@example.net", Phone: "+1-114-355-1841x78347", BirthDate: "28-06-69" },
- { Index: 3, FirstName: "Gwendolyn", LastName: "Sheppard", Sex: "Male", Email: "mercadon@example.com", Phone: "9017807728", BirthDate: "25-09-15" },
- { Index: 4, FirstName: "Kristine", LastName: "Mccann", Sex: "Female", Email: "lindsay55@example.com", Phone: "+1-607-333-9911x59088", BirthDate: "27-07-78" },
- { Index: 5, FirstName: "Bobby", LastName: "Pittman", Sex: "Female", Email: "blevins@example.com", Phone: "3739847538", BirthDate: "17-11-89" }, 
+ { index: 1, firstname: "Sara", lastname: "Mcguire", sex: "Female", email: "tsharp@example.net", phone: "(971)643-6089x9160", birthdate: "17-08-21" },
+ { index: 2, firstname: "Alisha", lastname: "Hebert", sex: "Male", email: "vincentgarrett@example.net", phone: "+1-114-355-1841x78347", birthdate: "28-06-69" },
+ { index: 3, firstname: "Gwendolyn", lastname: "Sheppard", sex: "Male", email: "mercadon@example.com", phone: "9017807728", birthdate: "25-09-15" },
+ { index: 4, firstname: "Kristine", lastname: "Mccann", sex: "Female", email: "lindsay55@example.com", phone: "+1-607-333-9911x59088", birthdate: "27-07-78" },
+ { index: 5, firstname: "Bobby", lastname: "Pittman", sex: "Female", email: "blevins@example.com", phone: "3739847538", birthdate: "17-11-89" }, 
  ];
 
 
@@ -55,7 +55,7 @@ const columns = [
         {key: 'firstname', displayName: 'FirstName'},
         {key: 'lastname', displayName: 'LastName'},
         {key: 'sex', displayName: 'Sex'},
-        {key: 'email', displayName: 'Email', edit: true},
+        {key: 'email', displayName: 'Email'},
         {key: 'phone', displayName: 'Phone'},
         {key: 'birthdate', displayName:'BirthDate'}
         ];
