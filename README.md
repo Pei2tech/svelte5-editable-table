@@ -1,88 +1,86 @@
 # svelte5-editable-table
 
-A simple and small Svelte 5 editable table component. It allows editing data and performing extra operations through icon selection.
+A simple and lightweight Svelte 5 editable table component. It allows users to edit data and perform additional operations through icon selection.
 
-This project started as a fork of [svelte-generic-crud-table](https://github.com/ivosdc/svelte-generic-crud-table). However, almost all the code has been rewritten to improve performance, add new features, and remove outdated ones. 
+This project started as a fork of [svelte-generic-crud-table](https://github.com/ivosdc/svelte-generic-crud-table). However, nearly all the code has been rewritten to improve performance, add new features, support responsiveness, and remove outdated functionality.
 
-## Feature
+## Features
 
-- **Editable Cells**: Allows users to edit specific cells in the table.
+- **Editable Cells**: Enables users to edit specific cells in the table.
 - **Customizable Columns**: Configure columns with options like `edit`, `width`, and `displayName`.
-- **Row Selection**: Supports single and multiple row selection.
+- **Row Selection**: Supports both single and multiple row selection.
 - **Custom Styles**: Define styles for rows, including hover, click, and alternate row styles.
 - **Icons and Tooltips**: Customize icons and tooltips for actions like edit, operation, confirm, and cancel.
 - **Sorting**: Enable or disable sorting for columns.
-- **Responsive Design**: Automatically adjusts column widths with the `autowidth` option.
+- **Responsive Design**: Automatically adjusts column widths using the `autowidth` option.
 - **Event Callbacks**: Handle events like cell clicks, updates, and operations with custom callbacks.
 
-
-## Install
+## Installation
 
 ```sh
-npm install -save svelte5-editable-table 
+npm install --save svelte5-editable-table 
 ```
 
 ## Usage
 
 ```html
 <script> 
-  import {SveltEditeTable} from "svelte5-editable-table";  
+  import { SvelteEditTable } from "svelte5-editable-table";  
 </script> 
 
 <SvelteEditTable  
-               table_config={table_config}
-               rows_data={rows}/>  
+  table_config={table_config}
+  rows_data={rows} 
+/>  
 ```
 
-
-## Sample Data and config
+## Sample Data and Configuration
 
 ```js
-// define sample data (below data are from kaggle web site)...
+// Sample data (adapted from Kaggle)
 
 const rows = [
- { index: 1, firstname: "Sara", lastname: "Mcguire", sex: "Female", email: "tsharp@example.net", phone: "(971)643-6089x9160", birthdate: "17-08-21" },
- { index: 2, firstname: "Alisha", lastname: "Hebert", sex: "Male", email: "vincentgarrett@example.net", phone: "+1-114-355-1841x78347", birthdate: "28-06-69" },
- { index: 3, firstname: "Gwendolyn", lastname: "Sheppard", sex: "Male", email: "mercadon@example.com", phone: "9017807728", birthdate: "25-09-15" },
- { index: 4, firstname: "Kristine", lastname: "Mccann", sex: "Female", email: "lindsay55@example.com", phone: "+1-607-333-9911x59088", birthdate: "27-07-78" },
- { index: 5, firstname: "Bobby", lastname: "Pittman", sex: "Female", email: "blevins@example.com", phone: "3739847538", birthdate: "17-11-89" }, 
- ];
+  { index: 1, firstname: "Sara", lastname: "Mcguire", sex: "Female", email: "tsharp@example.net", phone: "(971)643-6089x9160", birthdate: "17-08-21" },
+  { index: 2, firstname: "Alisha", lastname: "Hebert", sex: "Male", email: "vincentgarrett@example.net", phone: "+1-114-355-1841x78347", birthdate: "28-06-69" },
+  { index: 3, firstname: "Gwendolyn", lastname: "Sheppard", sex: "Male", email: "mercadon@example.com", phone: "9017807728", birthdate: "25-09-15" },
+  { index: 4, firstname: "Kristine", lastname: "Mccann", sex: "Female", email: "lindsay55@example.com", phone: "+1-607-333-9911x59088", birthdate: "27-07-78" },
+  { index: 5, firstname: "Bobby", lastname: "Pittman", sex: "Female", email: "blevins@example.com", phone: "3739847538", birthdate: "17-11-89" }, 
+];
 
-
-// define column configures
+// Column configuration
 const columns = [            
-        {key: 'index', displayName:'Index'},
-        {key: 'firstname', displayName: 'FirstName'},
-        {key: 'lastname', displayName: 'LastName'},
-        {key: 'sex', displayName: 'Sex'},
-        {key: 'email', displayName: 'Email'},
-        {key: 'phone', displayName: 'Phone'},
-        {key: 'birthdate', displayName:'BirthDate'}
-        ];
+  { key: 'index', displayName: 'Index' },
+  { key: 'firstname', displayName: 'First Name' },
+  { key: 'lastname', displayName: 'Last Name' },
+  { key: 'sex', displayName: 'Sex' },
+  { key: 'email', displayName: 'Email' },
+  { key: 'phone', displayName: 'Phone' },
+  { key: 'birthdate', displayName: 'Birth Date' }
+];
 
-// define table configuration
- let table_config = {             
-        columns_setting: columns,        
-      }        
+// Table configuration
+let table_config = {             
+  columns_setting: columns,        
+};
 ```
 
- ## Props of columns_setting
+## Props of `columns_setting`
 
 | Name           | Type          | Description                                                             |
 | --------------- | -------------| ----------------------------------------------------------------------- |
 | `key`          | String        | Unique key identifying the column                                       |
-| `displayName`  | String        | Name for the header                                                     |
-| `width`        | Boolean       | Width of the field. It is only valid when `autowidth` is set to `false` |
+| `displayName`  | String        | Name for the column header                                              |
+| `width`        | Boolean       | Width of the column. Only valid when `autowidth` is set to `false`      |
 | `edit`         | Boolean       | Optional. Default: `false`                                              |
 
-## Props of table_config
+## Props of `table_config`
 
 | Option                     | Type            | Description                                                             |
 | -------------------------- | --------------- | ----------------------------------------------------------------------- |
 | `columns_setting`          | Object[]        | Configuration of columns (array)                                        |
-| `autowidth`                | Boolean         | Width adjustment. Default: `true`                                       |
-| `sortable`                 | Boolean         | Sorting. Default: `true`                                                |
-| `operation`                | Boolean         | Extra operation icon. Default: `false`                                  |
+| `autowidth`                | Boolean         | Automatically adjusts column widths. Default: `true`                    |
+| `sortable`                 | Boolean         | Enables sorting. Default: `true`                                        |
+| `operation`                | Boolean         | Displays an extra operation icon. Default: `false`                      |
 | `style`                    | Object          | Row style configuration. Allows custom styling for rows or cells. See examples below. |
 | `icons`                    | Object          | Optional icons (e.g., emoji) for operations or actions. See examples below. |
 | `iconstip`                 | Object          | Optional tooltip text for icons. See examples below.                    |
@@ -92,8 +90,6 @@ const columns = [
 #### `style`
 
 The `style` property allows you to define custom styles for rows in the table. You can specify styles for alternate rows, hovered rows, clicked rows, and selected rows. This provides flexibility to customize the appearance of the table.
-
-For example:
 
 ```js
 let table_config = {
@@ -114,7 +110,7 @@ let table_config = {
 
 #### `icons`
 
-You can customize icons for actions like edit, operation, confirm or cancel. For example:
+You can customize icons for actions like edit, operation, confirm, or cancel.
 
 ```js
 let table_config = {
@@ -122,7 +118,7 @@ let table_config = {
   icons: {
     edit: "✏️",
     operation: "🗑️",
-      },
+  },
 };
 ```
 
@@ -151,7 +147,7 @@ let table_config = {
 - `confirm`: Tooltip text for the confirmation icon.
 - `cancel`: Tooltip text for the cancel icon.
 
-### Props of component
+### Props of the Component
 
 Pass the following parameters to the component:
 
@@ -164,16 +160,16 @@ Pass the following parameters to the component:
 | `table_config` |                     | Configuration of the table, including column settings and additional options like sorting, styling, and icons |
 | `rows_data`    |                     | Data of rows                                                            |
 
-### Selecting multiple Rows
+### Selecting Multiple Rows
 
 - By default, single row selection is handled by clicking on a row. However, multiple row selection is managed through the `onclickCell` event and the `selectedrow` property.
 
 ```html
 <script>  
-  import {SvelteEditTable} from 'svelte5-editable-table';
+  import { SvelteEditTable } from 'svelte5-editable-table';
   let selectedrow = $state([]);
   function handleCell(event) {       
-        selectedrow = [...selectedrow, event.id];        
+    selectedrow = [...selectedrow, event.id];        
   }
 </script> 
 <SvelteEditTable

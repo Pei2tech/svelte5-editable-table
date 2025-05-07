@@ -95,7 +95,7 @@
         let newdata = array.map(row => {
             let newrow = Object.entries(row).filter(([key]) => keys.includes(key));
             if (editedFlag || operationFlag)
-                newrow.push(["", "edited"]);
+                newrow.push(["", "edit"]);
             return newrow.map(([, value]) => value + "");
         });
         let tempkey = Object.keys(newobj).filter(key => keys.includes(key));
@@ -382,8 +382,8 @@
     });  
     
     $effect(()=>{         
-        if(tempwidth!=tablewidth && autowidthFlag && tablewidth!==undefined) {                
-                calculateWidth();                
+        if(tempwidth!=tablewidth && autowidthFlag && tablewidth!==undefined) {             
+            calculateWidth();                
         }
         tempwidth=tablewidth;
     })
