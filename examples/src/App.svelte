@@ -1,8 +1,10 @@
 <script>
  import {SvelteEditTable} from 'svelte5-editable-table';
 
+
  let selectedrow=$state([]);
  let myData1 = $state([]);
+ let yes = $state(false);
   
 
  let newData = [
@@ -22,16 +24,7 @@
  { index: 14, firstname: "Samantha", lastname: "Moon", sex: "Male", email: "wesleymullins@example.net", phone: "7788378816", birthdate: "21-06-78", title: "Intelligence analyst" }
  ];
 
-
- const rows = [
- { index: 1, firstname: "Sara", lastname: "Mcguire", sex: "Female", email: "tsharp@example.net", phone: "(971)643-6089x9160", birthdate: "17-08-21" },
- { index: 2, firstname: "Alisha", lastname: "Hebert", sex: "Male", email: "vincentgarrett@example.net", phone: "+1-114-355-1841x78347", birthdate: "28-06-69" },
- { index: 3, firstname: "Gwendolyn", lastname: "Sheppard", sex: "Male", email: "mercadon@example.com", phone: "9017807728", birthdate: "25-09-15" },
- { index: 4, firstname: "Kristine", lastname: "Mccann", sex: "Female", email: "lindsay55@example.com", phone: "+1-607-333-9911x59088", birthdate: "27-07-78" },
- { index: 5, firstname: "Bobby", lastname: "Pittman", sex: "Female", email: "blevins@example.com", phone: "3739847538", birthdate: "17-11-89" }, 
- ];
-
-
+ 
 // define column configures
 let columns = [            
         {key: 'index', displayName:'Index'},
@@ -43,36 +36,43 @@ let columns = [
         ];
 
 // define table configuration
- let table_config = $state({ 
-        // operation: true,           
+ let table_config = $state({  
+        operation: false,                         
         columns_setting: columns,        
       });        
 
+
    
-    function handleCell(event) {       
-        selectedrow=[...selectedrow, event.id]        
+    function handleCell(event) {          
+      if (yes)
+        selectedrow=[...selectedrow, event.id]
+      else
+        selectedrow =[]        
     }
 
 
-    function handleUpdate(event) {
-                 
+    function handleUpdate(event) {           
     }
 
 
-    function handleDelete(event) {     
+    function handleDelete(event) {          
+        myData1.splice(event.id,1)
     }
 
     function normaltable() {       
         selectedrow=[];
-        table_config = {                   
+        table_config = {
+          operation: false,                            
           columns_setting: columns,        
          };     
-        myData1=newData;
+        myData1=[...newData];
     }
 
-    function editabletable() {      
+    function editabletable() {        
       table_config = {
-        columns_setting: [                      
+        operation: false,                                   
+        columns_setting :
+        [                      
         {key: 'index', displayName:'Index'},
         {key: 'firstname', displayName: 'FirstName'},
         {key: 'lastname', displayName: 'LastName'},
@@ -81,7 +81,24 @@ let columns = [
         {key: 'birthdate', displayName:'BirthDate'}
         ]      
     }
-    myData1=newData;          
+      
+      myData1=[...newData];          
+    }
+
+
+    function deletetable() {              
+        table_config=
+         {                   
+          operation: true,
+          icons: {   
+            operation: "🗑️",
+          },  
+          iconstip: {    
+            operation: "Delete",
+          },  
+          columns_setting: columns,        
+         };     
+         myData1=[...newData]; 
     }
 
 </script>
@@ -90,24 +107,36 @@ let columns = [
   <div>
     
   <h1>Svelte5 Editable Table</h1>
-
-  <!-- <div> -->
+  
     <fieldset class="list-group">
-      <legend>Example</legend>     
-      <SvelteEditTable                       
+      <legend>Table Example</legend>     
+      <SvelteEditTable 
+                       onupdate={handleUpdate}
+                       onoperation={handleDelete}
+                       selectedrow={selectedrow}
+                       onclickCell={handleCell}                       
                        table_config={table_config}
                        rows_data={myData1}/>
   </fieldset>
 
 
-  <button onclick={normaltable}> Normal Table </button> &nbsp;  
+  <button onclick={normaltable}> Normal </button>   
   
-  <button onclick={editabletable}> Editable Table </button> 
- 
+  <button onclick={editabletable}> Edit Data </button> 
+  
+  <button onclick={deletetable}> Delete Data </button> 
+  <label>    
+    <input type="checkbox" bind:checked={yes} />
+        multi-row select
+  </label>
+  
+
 </main>
 
 <style>
- 
+ label {
+  font-size: 1.2em;
+ }
   .list-group {
         display:flex;        
         width:100%;     

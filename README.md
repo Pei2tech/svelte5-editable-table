@@ -2,7 +2,7 @@
 
 A simple and lightweight Svelte 5 editable table component. It allows users to edit data and perform additional operations through icon selection.
 
-This project started as a fork of [svelte-generic-crud-table](https://github.com/ivosdc/svelte-generic-crud-table). However, nearly all the code has been rewritten to improve performance, add new features, support responsiveness, and remove outdated functionality.
+This project started as a fork of [svelte-generic-crud-table](https://github.com/ivosdc/svelte-generic-crud-table). However, nearly all the code has been rewritten to improve performance, change features, support responsiveness, and remove outdated functionality.
 
 ## Features
 
@@ -14,6 +14,9 @@ This project started as a fork of [svelte-generic-crud-table](https://github.com
 - **Sorting**: Enable or disable sorting for columns.
 - **Responsive Design**: Automatically adjusts column widths using the `autowidth` option.
 - **Event Callbacks**: Handle events like cell clicks, updates, and operations with custom callbacks.
+
+## Example
+  [Example](https://pei2tech.github.io/svelte5-editable-table/)
 
 ## Installation
 

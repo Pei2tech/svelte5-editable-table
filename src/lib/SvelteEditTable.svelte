@@ -80,7 +80,7 @@
     let tempwidth=0;
     
        
-    function calculateWidth() {
+    function calculateWidth() {        
         if (tablewidth===undefined || tablewidth==0)
             return;       
         columnsWidth.splice(0,columnsWidth.length);
@@ -295,7 +295,7 @@
     }); 
            
 
-    $effect(() => {                                                
+    $effect.pre(() => {                                                      
             autowidthFlag = table_config.autowidth !== undefined ? table_config.autowidth : true;            
             sortableFlag = table_config.sortable !== undefined ? table_config.sortable : true;            
             operationFlag = table_config.operation !== undefined ? table_config.operation : false;
@@ -305,7 +305,6 @@
                 if (table_config.icons.operation) icons.operation = table_config.icons.operation;
                 if (table_config.icons.confirm) icons.confirm = table_config.icons.confirm;
                 if (table_config.icons.cancel) icons.cancel = table_config.icons.cancel;
-
             }
 
             if (table_config.iconstip) {
@@ -321,18 +320,19 @@
                 if (table_config.style.clickRow) rowstyle.click=table_config.style.clickRow;
                 if (table_config.style.selectedRow) rowstyle.selected=table_config.style.selectedRow;
 
-            }           
+            }   
+                 
             untrack(()=>{  
                 if (columnsWidth.length===0) {
                     if (editedFlag) {
                         columnsWidth = Array(table_config.columns_setting.length + 1).fill("100%");
                     }else
                         columnsWidth = Array(table_config.columns_setting.length).fill("100%");
-                }                     
+                }                                   
                 if (rows_data.length!==0){                   
                     if (autowidthFlag) {
                         overflow = "--overflow:visible";                        
-                        resize_position = "none";
+                        resize_position = "none";                       
                         calculateWidth();
                     } else {
                         overflow = "--overflow:hidden";
@@ -344,9 +344,8 @@
 
 
     $effect.pre(() => {                                      
-        if (rows_data.length !== 0) {                 
-         
-            untrack(()=>{                             
+        if (rows_data.length !== 0) {                                               
+            untrack(()=>{                         
                 sortOrder = null;                                   
                 showCell.splice(0,showCell.length);
                 if (editedFlag || operationFlag) {
