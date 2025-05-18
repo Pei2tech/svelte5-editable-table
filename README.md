@@ -2,7 +2,7 @@
 
 A simple and lightweight Svelte 5 editable table component. It allows users to edit data and perform additional operations through icon selection.
 
-This project started as a fork of [svelte-generic-crud-table](https://github.com/ivosdc/svelte-generic-crud-table). However, nearly all the code has been rewritten to improve performance, change features, support responsiveness, and remove outdated functionality.
+This project originated as a fork of [svelte-generic-crud-table](https://github.com/ivosdc/svelte-generic-crud-table), but has since undergone a complete architectural overhaul. The codebase was almost entirely rewritten as part of a focused initiative to introduce new capabilities, optimize performance, and enable full responsiveness. In the process, outdated specifications and incompatible features from the original codebase were removed to ensure consistency, maintainability, and full alignment with Svelte 5 standards.
 
 ## Features
 
