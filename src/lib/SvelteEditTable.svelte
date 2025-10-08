@@ -5,7 +5,8 @@
     const table_config_default = {
         autowidth: true,
         sortable: true,
-        operation: false,
+        option: false,
+        confirmoption: false,
         icons: {},
         iconstip:{},
         style:{},
@@ -18,8 +19,8 @@
      * @property {any} [selectedrow]
      * @property {any} [table_config]
      * @property {void} [onupdate]
-     * @property {void} [onoperation]
-     * @property {void} [onclickCell]
+     * @property {void} [onoption]
+     * @property {void} [onclickCell]  
      */
 
     /** @type {Props} */
@@ -29,8 +30,8 @@
         selectedrow = [],
         table_config = table_config_default, 
         onupdate,
-        onoperation,
-        onclickCell,        
+        onoption,
+        onclickCell,               
     } = $props();
 
     let sortOrder = $state(null);
@@ -41,13 +42,13 @@
         edit: '📝',
         cancel: '❌',
         confirm: '✔️︎',
-        operation: '⛏️',
+        option: '⛏️',
     });
     let iconstip=$state({
         edit: 'Edit',
         confirm: 'Confirm',
         cancel: 'Cancel',
-        operation: 'Operation',
+        option: 'Option',
     });
     let rowstyle= $state({
         alternate: '#E0F0FE',
@@ -60,7 +61,8 @@
     let overflow = $state("--overflow:visible");
     let rowbdcolor = $state([]);
     let editedFlag=$state(false);  
-    let operationFlag = $state(false);
+    let optionFlag = $state(false);
+    let confirmoptionFlag = $state(false);
     let autowidthFlag = $state(true);
     let sortableFlag = $state(true);
     let fieldFlag = true;
@@ -70,7 +72,7 @@
     let edit_id = $state({});
     let options_flag = $state([]);
     let options_edit_flag = $state([]);
-    let options_operation_flag = $state([]);
+    let options_option_flag = $state([]);
     let sortStore = [];
     let columnsWidth = $state([]);
     let showCell=$state([]);
@@ -92,18 +94,23 @@
             Object.entries(rows_data[0]).forEach(item=>newobj[item[0]]=item[0]);
         table_config.columns_setting.forEach(item=>newobj[item.key]=(item.displayName));
         let array = [newobj, ...rows_data];
+        if (editedFlag)
+            width = width - 48;
+        else if (optionFlag){       
+             if (confirmoptionFlag)
+                width = width - 48;
+             else
+                width = width - 24;          
+        }          
         let newdata = array.map(row => {
-            let newrow = Object.entries(row).filter(([key]) => keys.includes(key));
-            if (editedFlag || operationFlag)
-                newrow.push(["", "edit"]);
+            let newrow = Object.entries(row).filter(([key]) => keys.includes(key));            
             return newrow.map(([, value]) => value + "");
         });
         let tempkey = Object.keys(newobj).filter(key => keys.includes(key));
         let tempcolumn = calculateColumnWidths(newdata, width, font_size).map(item => item +'px' );
         keys.forEach((key, index) => columnsWidth[index] = tempcolumn[tempkey.indexOf(key)]);
-
-        if (!editedFlag && !operationFlag)
-            columnsWidth.pop();       
+        if (!editedFlag && !optionFlag)
+            columnsWidth.pop();
     }
 
     function setMenualwidth(){
@@ -118,7 +125,7 @@
                     count += 1;
                 }
             });            
-            let fieldwidth = (editedFlag||operationFlag) ?
+            let fieldwidth = (editedFlag||optionFlag) ?
                     `${parseInt((tablewidth - totalwidth - 60) / (table_config.columns_setting.length - count))}px` :
                     `${parseInt((tablewidth - totalwidth) / (table_config.columns_setting.length - count))}px`;            
             Object.keys(columnByKey).forEach((key, index) => {
@@ -138,10 +145,10 @@
         });
         options_flag[id]=false;
         options_edit_flag[id]=true;
-        options_operation_flag[id]=false;
+        options_option_flag[id]=false;
     }
 
-    function resetEditOperation(id) {
+    function resetEditOption(id) {
         if (id===NONE_OPERATION)
             return
         if (editedFlag) {
@@ -153,11 +160,11 @@
         }
         options_flag[id]=true;
         if (editedFlag) options_edit_flag[id]=false;
-        if (operationFlag) options_operation_flag[id]=false;
+        if (optionFlag) options_option_flag[id]=false;
     }
 
     function handleCancelEdit(id) {
-        resetEditOperation(id);
+        resetEditOption(id);
         last_id = NONE_OPERATION;
     }
 
@@ -175,45 +182,49 @@
     function handleConfirmEdit(id,event) {
         event.stopPropagation();               
         if (onupdate === undefined || onupdate === null){
-            resetEditOperation(id); 
+            resetEditOption(id); 
             last_id = NONE_OPERATION;      
             return
         } 
         const body = getUpdates(id);
         rows_data[id] = body; 
         onupdate({ id, row: body }),   
-        resetEditOperation(id);
+        resetEditOption(id);
         calculateWidth();
     }
 
-    function handleOperation(id,event) {
+    function handleOption(id,event) {
         event.stopPropagation();
         cancelEditingValue(id);
+        if (confirmoptionFlag === false) {           
+            handleConfirmOption(id, event);
+            return
+        }        
         last_id = id;
         options_flag[id]=false;
         options_edit_flag[id]=false;
-        options_operation_flag[id]=true;
+        options_option_flag[id]=true;
     }
 
-    function handleCancelOperation(id,event) {
+    function handleCancelOption(id,event) {
         event.stopPropagation();
-        resetEditOperation(id);
+        resetEditOption(id);
         last_id = NONE_OPERATION;
     }
 
-    function handleConfirmOperation(id,event) {
+    function handleConfirmOption(id,event) {
         event.stopPropagation(); 
-        if (onoperation === undefined || onoperation === null) {
-            resetEditOperation(id);
+        if (onoption === undefined || onoption === null) {
+            resetEditOption(id);
             last_id = NONE_OPERATION;       
             return
         } 
-        onoperation({ id, row: rows_data[id] }), 
-        resetEditOperation(id);
+        onoption({ id, row: rows_data[id] }), 
+        resetEditOption(id);
         rowbdcolor.fill("");
         last_id = NONE_OPERATION;
     }
-
+     
     function handleCell(id, cell,event) {
         event.stopPropagation();
         cancelEditingValue(id);
@@ -235,12 +246,12 @@
     function handleSort(key) {
         if (rows_data.length === 0) return;
         if (!sortableFlag) return;
-        resetEditOperation(last_id);
+        resetEditOption(last_id);
         last_id = NONE_OPERATION;
         rows_data = goSort(key, sortStore, rows_data);
         sortkey = key;
         sortOrder = sortStore[key] === 'ASC' ? 1 : -1;
-        rowbdcolor.fill("");       
+        rowbdcolor=rowbdcolor.fill("");
     }
 
 
@@ -298,11 +309,11 @@
     $effect.pre(() => {                                                      
             autowidthFlag = table_config.autowidth !== undefined ? table_config.autowidth : true;            
             sortableFlag = table_config.sortable !== undefined ? table_config.sortable : true;            
-            operationFlag = table_config.operation !== undefined ? table_config.operation : false;
-
+            optionFlag = table_config.option !== undefined ? table_config.option : false;
+            confirmoptionFlag = table_config.confirmoption !== undefined ? table_config.confirmoption : true; 
             if (table_config.icons) {
                 if (table_config.icons.edit) icons.edit = table_config.icons.edit;
-                if (table_config.icons.operation) icons.operation = table_config.icons.operation;
+                if (table_config.icons.option) icons.option = table_config.icons.option;
                 if (table_config.icons.confirm) icons.confirm = table_config.icons.confirm;
                 if (table_config.icons.cancel) icons.cancel = table_config.icons.cancel;
             }
@@ -311,7 +322,7 @@
                 if (table_config.iconstip.edit) iconstip.edit = table_config.iconstip.edit;
                 if (table_config.iconstip.confirm) iconstip.confirm = table_config.iconstip.confirm;
                 if (table_config.iconstip.cancel) iconstip.cancel = table_config.iconstip.cancel;
-                if (table_config.iconstip.operation) iconstip.operation = table_config.iconstip.operation;
+                if (table_config.iconstip.option) iconstip.option = table_config.iconstip.option;
             }
 
             if (table_config.style) {
@@ -348,10 +359,10 @@
             untrack(()=>{                         
                 sortOrder = null;                                   
                 showCell.splice(0,showCell.length);
-                if (editedFlag || operationFlag) {
+                if (editedFlag || optionFlag) {
                     options_flag.splice(0, options_flag.length);
                     options_edit_flag.splice(0, options_edit_flag.length);
-                    options_operation_flag.splice(0, options_operation_flag.length);
+                    options_option_flag.splice(0, options_option_flag.length);
                 }
             
                 edit_id={};
@@ -361,7 +372,7 @@
                         if (!(f in data)) data[f] = null;
                         showCell[i][j]=true;
                     });
-                    if (editedFlag || operationFlag)
+                    if (editedFlag || optionFlag)
                         options_flag[i]=true;
                 });  
                     
@@ -419,8 +430,9 @@
     .tr {
         display: inline-flex;
         resize: vertical;
-        border-radius: inherit;
-        border-top: 1px solid #bfbfbf;
+        border-radius: inherit;       
+        padding-top: 1px;
+        padding-bottom: 1px;
     }
 
     .alternated{
@@ -472,10 +484,10 @@
     }
 
     .options {
-        float: left;
-        position: relative;
-        cursor: pointer;
-        padding-left: 2px;
+        display: inline-flex;
+        float: left;        
+        justify-content: flex-start;        
+        cursor: pointer;         
     }
 
     .options:hover {
@@ -536,15 +548,15 @@
                             <textarea bind:this="{edit_id[key + i]}" onclick={(e) => { e.stopPropagation(); }}>{tableRow[key]}</textarea>
                            {/if}
                         </div>
-                        {#if (editedFlag || operationFlag) && Object.keys(columnByKey).length - 1 === j}
+                        {#if (editedFlag || optionFlag) && Object.keys(columnByKey).length - 1 === j}
                             <div style:width="columnsWidth[table_configx.columns_setting.length]">
                                 {#if options_flag[i]}
                                     <div class="options-field">
                                         {#if editedFlag}
                                             <div class="options" onclick={(e)=> handleEdit(i,e)} title={iconstip.edit} tabindex="0">{icons.edit}</div>
                                         {/if}
-                                        {#if operationFlag}
-                                            <div class="options" onclick={(e)=> handleOperation(i,e)} title="{iconstip.operation}" tabindex="0">{icons.operation}</div>
+                                        {#if optionFlag}
+                                            <div class="options" onclick={(e)=> handleOption(i,e)} title="{iconstip.option}" tabindex="0">{icons.option}</div>
                                         {/if}
                                     </div>
                                 {/if}
@@ -554,10 +566,10 @@
                                         <div class="options" onclick={(e)=> handleCancelEdit(i,e)} title={iconstip.cancel} tabindex="0">{icons.cancel}</div>
                                     </div>
                                 {/if}
-                                {#if options_operation_flag[i]}
+                                {#if options_option_flag[i]}
                                     <div class="options-field ">
-                                        <div class="options" onclick={(e)=> handleConfirmOperation(i,e)} title={iconstip.confirm} tabindex="0">{icons.confirm}</div>
-                                        <div class="options" onclick={(e)=> handleCancelOperation(i,e)} title={iconstip.cancel} tabindex="0">{icons.cancel}</div>
+                                        <div class="options" onclick={(e)=> handleConfirmOption(i,e)} title={iconstip.confirm} tabindex="0">{icons.confirm}</div>
+                                        <div class="options" onclick={(e)=> handleCancelOption(i,e)} title={iconstip.cancel} tabindex="0">{icons.cancel}</div>
                                     </div>
                                 {/if}
                             </div>

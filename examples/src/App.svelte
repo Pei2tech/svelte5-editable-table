@@ -37,7 +37,7 @@ let columns = [
 
 // define table configuration
  let table_config = $state({  
-        operation: false,                         
+        option: false,                         
         columns_setting: columns,        
       });        
 
@@ -62,7 +62,7 @@ let columns = [
     function normaltable() {       
         selectedrow=[];
         table_config = {
-          operation: false,                            
+          option: false,                            
           columns_setting: columns,        
          };     
         myData1=[...newData];
@@ -70,7 +70,7 @@ let columns = [
 
     function editabletable() {        
       table_config = {
-        operation: false,                                   
+        option: false,                                   
         columns_setting :
         [                      
         {key: 'index', displayName:'Index'},
@@ -89,12 +89,12 @@ let columns = [
     function deletetable() {              
         table_config=
          {                   
-          operation: true,
+          option: true,
           icons: {   
-            operation: "🗑️",
+            option: "🗑️",
           },  
           iconstip: {    
-            operation: "Delete",
+            option: "Delete",
           },  
           columns_setting: columns,        
          };     
@@ -112,7 +112,7 @@ let columns = [
       <legend>Table Example</legend>     
       <SvelteEditTable 
                        onupdate={handleUpdate}
-                       onoperation={handleDelete}
+                       onoption={handleDelete}
                        selectedrow={selectedrow}
                        onclickCell={handleCell}                       
                        table_config={table_config}
@@ -139,7 +139,7 @@ let columns = [
  }
   .list-group {
         display:flex;        
-        width:100%;     
+        width:800px;     
         height:300px;
         overflow:auto;
         margin-bottom: 10px;

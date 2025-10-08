@@ -2,18 +2,18 @@
 
 A simple and lightweight Svelte 5 editable table component. It allows users to edit data and perform additional operations through icon selection.
 
-This project originated as a fork of [svelte-generic-crud-table](https://github.com/ivosdc/svelte-generic-crud-table), but has since undergone a complete architectural overhaul. The codebase was almost entirely rewritten as part of a focused initiative to introduce new capabilities, optimize performance, and enable full responsiveness. In the process, outdated specifications and incompatible features from the original codebase were removed to ensure consistency, maintainability, and full alignment with Svelte 5 standards.
+This project originated as a fork of [svelte-generic-crud-table](https://github.com/ivosdc/svelte-generic-crud-table), but it has since undergone a complete architectural overhaul. The codebase was almost entirely rewritten to introduce new features, optimize performance, and ensure full responsiveness. Outdated specifications and incompatible features from the original codebase were removed to maintain consistency, improve maintainability, and fully align with Svelte 5 standards.
 
 ## Features
 
-- **Editable Cells**: Enables users to edit specific cells in the table.
+- **Editable Cells**: Allows users to edit specific cells in the table.
 - **Customizable Columns**: Configure columns with options like `edit`, `width`, and `displayName`.
 - **Row Selection**: Supports both single and multiple row selection.
 - **Custom Styles**: Define styles for rows, including hover, click, and alternate row styles.
-- **Icons and Tooltips**: Customize icons and tooltips for actions like edit, operation, confirm, and cancel.
+- **Icons and Tooltips**: Customize icons and tooltips for actions like edit, option, confirm, and cancel.
 - **Sorting**: Enable or disable sorting for columns.
 - **Responsive Design**: Automatically adjusts column widths using the `autowidth` option.
-- **Event Callbacks**: Handle events like cell clicks, updates, and operations with custom callbacks.
+- **Event Callbacks**: Handle events like cell clicks, updates, and options with custom callbacks.
 
 ## Example
   [Example](https://pei2tech.github.io/svelte5-editable-table/)
@@ -30,11 +30,12 @@ npm install --save svelte5-editable-table
 <script> 
   import { SvelteEditTable } from "svelte5-editable-table";  
 </script> 
-
-<SvelteEditTable  
-  table_config={table_config}
-  rows_data={rows} 
-/>  
+<div style="width:800px">
+  <SvelteEditTable  
+    table_config={table_config}
+    rows_data={rows} 
+  />  
+</div>
 ```
 
 ## Sample Data and Configuration
@@ -83,7 +84,8 @@ let table_config = {
 | `columns_setting`          | Object[]        | Configuration of columns (array)                                        |
 | `autowidth`                | Boolean         | Automatically adjusts column widths. Default: `true`                    |
 | `sortable`                 | Boolean         | Enables sorting. Default: `true`                                        |
-| `operation`                | Boolean         | Displays an extra operation icon. Default: `false`                      |
+| `option`                   | Boolean         | Displays an extra option icon. Default: `false`                         |
+| `confirmoption`            | Boolean         | Enables confirmation for the option icon. Default: `false`              |
 | `style`                    | Object          | Row style configuration. Allows custom styling for rows or cells. See examples below. |
 | `icons`                    | Object          | Optional icons (e.g., emoji) for operations or actions. See examples below. |
 | `iconstip`                 | Object          | Optional tooltip text for icons. See examples below.                    |
@@ -113,40 +115,40 @@ let table_config = {
 
 #### `icons`
 
-You can customize icons for actions like edit, operation, confirm, or cancel.
+You can customize icons for actions like edit, option, confirm, or cancel.
 
 ```js
 let table_config = {
   ...existing code...
   icons: {
     edit: "✏️",
-    operation: "🗑️",
+    option: "🗑️",
   },
 };
 ```
 
 - `edit`: Icon for the edit action.
-- `operation`: Icon for the extra operation action.
+- `option`: Icon for the extra option action.
 - `confirm`: Icon for the confirmation action.
 - `cancel`: Icon for the cancel action.
 
 #### `iconstip`
 
-You can define tooltips for the icons to provide different context (e.g., different languages). For example:
+You can define tooltips for the icons to provide different contexts (e.g., different languages). For example:
 
 ```js
 let table_config = {
   ...existing code...
   iconstip: {
     edit: "Update",
-    operation: "Delete",
-    confirm: "確認",
+    option: "Delete",
+    confirm: "Confirm",
   },
 };
 ```
 
 - `edit`: Tooltip text for the edit icon.
-- `operation`: Tooltip text for the operation icon.
+- `option`: Tooltip text for the option icon.
 - `confirm`: Tooltip text for the confirmation icon.
 - `cancel`: Tooltip text for the cancel icon.
 
@@ -158,7 +160,7 @@ Pass the following parameters to the component:
 | -------------- | ------------------- | ----------------------------------------------------------------------- |
 | `onclickCell`  | `event` (id, key, row) | Triggered when a cell is clicked                                        |
 | `onupdate`     | `event` (id, row)   | Triggered when the edit icon is clicked                                 |
-| `onoperation`  | `event` (id, row)   | Triggered when the operation icon is clicked                            |
+| `onoption`     | `event` (id, row)   | Triggered when the option icon is clicked                               |
 | `selectedrow`  |                     | Pass selected rows (id)                                                 |
 | `table_config` |                     | Configuration of the table, including column settings and additional options like sorting, styling, and icons |
 | `rows_data`    |                     | Data of rows                                                            |
